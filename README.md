@@ -9,3 +9,8 @@ Class Portfolio for CS 4375 - Machine Learning
 
 ## Regression and Classification
 This is a project done in R on linear and logistic regressions with a splash of Naive Bayes where we find datasets on the internet and try to make models of them and perform an anaylsis. You can find them [here](Regression.pdf) and [here.](Classification.pdf)
+
+## ML from Scratch
+This was a group project where a classmate and I implemented logistic regression and naive bayes algorithms in C++ and ran it on a titanic test data set. You can find the files here. 
+[Logistic Regression](LogR.cpp)
+[Naive Bayes](naiveBayes.cpp)
