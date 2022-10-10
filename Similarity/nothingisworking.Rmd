@@ -1,0 +1,24 @@
+```{r}
+red <- read.csv("Red.csv")
+white <- read.csv("White.csv")
+rose <- read.csv("Rose.csv")
+sparkle <- read.csv("Sparkling.csv")
+totalWine <- rbind(data = red, data = white, data = rose, data = sparkle)
+names(totalWine)[1] <- "Name"
+
+totalWine <- subset(totalWine, select = -c(Name, Winery, Region))
+totalWine <- subset(totalWine, totalWine$Year != "N.V.")
+totalWine <- subset(totalWine, totalWine$Rating != 3)
+totalWine <- subset(totalWine, totalWine$Year >= 2000)
+totalWine$Rating[totalWine$Rating <= 3] <- 0
+totalWine$Rating[totalWine$Rating > 3] <- 1
+totalWine <- totalWine[,c(1,2,3,5,4)]
+
+head(totalWine)
+summary(totalWine)
+
+prWine <- prcomp(~Rating + NumberOfRatings + Price, data = totalWine, scale = TRUE, center = TRUE)
+prWine
+
+```
+
