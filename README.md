@@ -16,5 +16,5 @@ This was a group project where a classmate and I implemented logistic regression
 [Naive Bayes](naiveBayes.cpp)
 
 ## Similarity
-This group project was a deep dive into clustering and dimensional reduction, along with sharpening our regression and classification skills. The section I had contributed was the dimensionality reduction, which can be found here. [Dimensionality Reduction pdf](Dimensionality_Reduction.pdf)
+This group project was a deep dive into clustering and dimensional reduction, along with sharpening our regression and classification skills. The section I had contributed was the dimensionality reduction, which can be found here. [Dimensionality Reduction pdf](https://github.com/Jackshouka/ML_Portfolio/blob/main/Similarity/Dimensionality_Reduction.pdf)
 Addtional group member work can be found in the similarity folder!
