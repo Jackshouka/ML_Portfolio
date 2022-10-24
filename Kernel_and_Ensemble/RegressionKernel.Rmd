@@ -1,0 +1,134 @@
+---
+title: "Regression Kernel"
+author: "Isabelle Villegas and Jack Asaad"
+date: "`r Sys.Date()`"
+output:
+  pdf_document: default
+  html_document:
+    df_print: paged
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+library(e1071)
+library(MASS)
+library(tidyverse)
+install.packages("ggplot2")
+library(ggplot2)
+
+```
+## Classification Assignment
+This data given by an airline organization. The actual name of the company is not given due to various purposes which is why the name Invistico airlines.
+
+This dataset consists of the details of customers who have already flown with them. The feedback of the customers on various context and their flight data has been consolidated.
+
+The main purpose of this dataset is to predict whether a future customer would be satisfied with their service given the details of the other parameters values.
+
+Also the airlines need to know on which aspect of the services offered by them have to be emphasized more to generate more satisfied customers.
+
+The link for the data set can be found here: https://www.kaggle.com/datasets/sjleshrac/airlines-customer-satisfaction
+```{r}
+data <- read.csv("airline_data_1.csv")
+data <- data[1:10050, ]
+str(data)
+```
+
+## Cleaning Up The Data Set
+Cleaning up data set for logistic regression, by converting qualitative columns into factors.
+
+```{r}
+# Factor columns
+data$satisfaction<- factor(data$satisfaction) 
+data$Gender <- factor(data$Gender) 
+
+# removing columns that would only have 2 levels
+data <- subset (data, select = -4)
+data <- subset (data, select = -5)
+
+data$Class <- factor(data$Class) 
+
+# Create new cleaned CustomerData data frame for full factoring (linear regression)
+CustomerData_factored <- data
+
+# Continue factoring numeric finite columns
+#for(i in 4:21) {
+#CustomerData_factored[,i] <- factor(CustomerData_factored[,i], levels=c(0,1,2,3,4,5)) 
+#}
+
+# Remove na rows
+data_complete <- data[complete.cases(data),]
+data <- CustomerData_factored[complete.cases(CustomerData_factored),]
+str(data)
+```
+
+
+```{r}
+str(data)
+```
+
+### a. Divide into 80/20 train/test
+
+Calculating where in the data set it needs to be split for an 80/20 training and test set and then creating the training set from the first element to the split-th element
+
+```{r}
+set.seed(1234)
+split <- round(nrow(data)*0.8)
+train <- data[1:split, ]
+```
+
+Creating the test data set going from the split point + 1 all the way to the end of the data set
+
+```{r}
+test <- data[(split+1):nrow(data),]
+```
+
+
+## Explore the training set statistically and graphically
+
+Here we can see that the Departure Delay and how they are spread out. There are more points for a low departure delay and less with a longer one.
+
+```{r}
+ggplot(data, aes(x = Departure.Delay.in.Minutes, y = Departure.Delay.in.Minutes)) + geom_point()
+```
+
+## Perform SVM regression, trying linear, polynomial, and radial kernels with various C and gamma hyperparameters.
+
+```{r}
+svm1 <- svm(Departure.Delay.in.Minutes~., data=train, kernel="linear", cost=10, scale=TRUE)
+summary(svm1)
+pred <- predict(svm1, newdata=test)
+cor_svm1 <- cor(pred, test$Departure.Delay.in.Minutes)
+mse_svm1 <- mean((pred - test$Departure.Delay.in.Minutes)^2)
+```
+
+Trying a polynomial kernal
+```{r}
+svm2 <- svm(Departure.Delay.in.Minutes~., data=train, kernel="polynomial", cost=10, scale=TRUE)
+summary(svm2)
+pred <- predict(svm2, newdata=test)
+cor_svm2 <- cor(pred, test$Departure.Delay.in.Minutes)
+mse_svm2 <- mean((pred - test$Departure.Delay.in.Minutes)^2)
+```
+
+Trying a radial kernal
+```{r}
+svm3 <- svm(Departure.Delay.in.Minutes~., data=train, kernel="radial", cost=10, gamma=1, scale=TRUE)
+summary(svm3)
+pred <- predict(svm3, newdata=test)
+cor_svm3 <- cor(pred, test$Departure.Delay.in.Minutes)
+mse_svm3 <- mean((pred - test$Departure.Delay.in.Minutes)^2)
+```
+
+Tuning the Hyperparameters
+```{r}
+set.seed(1234)
+tune.out <- tune(svm, Departure.Delay.in.Minutes~., data=data, kernel="radial",
+                 ranges=list(cost=c(0.1,1,10,100,1000),
+                             gamma=c(0.5,1,2,3,4)))
+summary(tune.out)
+svm4 <- svm(Departure.Delay.in.Minutes~., data=train, kernel="radial", cost=100, gamma=0.5, scale=TRUE)
+pred <- predict(svm4, newdata=test)
+cor_svm4 <- cor(pred, test$Departure.Delay.in.Minutes)
+mse_svm4 <- mean((pred - test$Departure.Delay.in.Minutes)^2)
+```

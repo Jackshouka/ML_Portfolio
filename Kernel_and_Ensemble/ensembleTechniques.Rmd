@@ -1,0 +1,134 @@
+---
+title: "Ensemble Techniques: Rice Classification - 10/23"
+output:
+  pdf_document: default
+  html_notebook: default
+  html_document:
+    df_print: paged
+---
+
+# Rice Seed Classification with Ensemble Techniques
+
+
+On this R markdown file, we'll be investigating a [Rice seed classification dataset found on Kaggle.](https://www.kaggle.com/datasets/mssmartypants/rice-type-classification)
+
+(Link for pdf viewers: https://www.kaggle.com/datasets/mssmartypants/rice-type-classification)
+
+The dataset has two classes to categorize. A "0" indicates a Gonen rice seed (commonly found and produced in Northwest Turkey) and "1" for jasmine rice. This is tied to the class attribute of the dataset.
+
+This dataset was explored and elaborated on in the kernelClassfication.rmd section of the project. So for the sake of brevity we will forgo this step here and continue with classification via ensemble techniques.
+
+```{r}
+df0 <- read.csv("riceClassification.csv", header = TRUE)
+df <- df0[,-1] # remove id section of rice grain
+df$Class <- as.factor(df$Class) #factorize class so r doesn't treat it as a numeric value
+head(df)
+#test/train split
+set.seed(1234)
+i <- sample(1 : nrow(df), round(nrow(df) * 0.8), replace = FALSE)
+train <- df[i,]
+test <- df[-i,]
+```
+
+## Decision Tree Baseline
+
+```{r}
+head(train)
+tail(train)
+
+```
+
+
+```{r}
+library(tree)
+library(rpart)
+
+
+tree_rice <- rpart(train$Class~., data=train, method="class")
+tree_rice
+summary(tree_rice)
+plot(tree_rice, uniform = TRUE)
+text(tree_rice, use.n = TRUE, all = TRUE)
+
+```
+I'm not sure why the decision tree isn't plotting, especially when we see a very different tree_rice summary that looks to be pretty sophisticated. Strange. Let's try a prediction next.
+
+```{r}
+tree_pred <- predict(tree_rice, newdata=test, type="class")
+summary(tree_pred)
+table(tree_pred, test$Class)
+mean(tree_pred==test$Class)
+```
+
+Regardless of our wonky printing decision tree plot, we have some great accuracy values for a standard decision tree. 
+
+
+## Random Forest
+
+```{r}
+library(randomForest)
+start.time <- Sys.time()
+
+set.seed(1234)
+rf <- randomForest(train$Class ~ ., data=train, importance=TRUE, proximity = TRUE)
+summarry(rf)
+print(rf)
+
+end.time <- Sys.time()
+time.taken <- end.time - start.time
+print(time.taken)
+```
+
+## Boosting via adabag
+
+```{r}
+library(adabag)
+start.time2 <- Sys.time()
+
+adbag1 <- boosting(Class~. , data = train, boos = FALSE, mfinal = 100, coeflearn = 'Breiman')
+summary(adbag1)
+```
+
+Predict on adabag
+
+```{r}
+pred <- predict(adbag1, newdata=test, type = "response")
+acc_adabad <- mean(pred$Class==test$Class)
+
+end.time2 <- Sys.time()
+time.taken2 <- end.time2 - start.time2
+print(time.taken2)
+
+#mcc_adabag <- mcc(factor(pred$Class), test$Class)
+print(paste("accuracy=", acc_adabad))
+#print(paste("mcc=", mcc_adabag))
+```
+
+
+## XGBoost
+
+```{r}
+require(xgboost)
+start.time3 <- Sys.time()
+
+data(agaricus.train, package='xgboost')
+data(agaricus.test, package='xgboost')
+trainxg <- agaricus.train
+testxg <- agaricus.test
+
+model <- xgboost(data=trainxg$data, label=trainxg$label, nrounds=8, objective='binary:logistic')
+
+pred <- predict(model, testxg$data)
+pred <- ifelse(pred> 0.5,1,0)
+table(pred, testxg$label)
+
+cv.res <- xgb.cv(data=trainxg$data, label=trainxg$label, nfold=5, nrounds=2, objective='binary:logistic')
+
+end.time3 <- Sys.time()
+time.taken3 <- end.time3 - start.time3
+print(time.taken3)
+```
+
+## Final Remarks
+
+With all of our times in, we can see that randomforest and adaboost take AGES to run, with a questionable tradeoff. They don't seem to have much better accuracy than that of a standard decision tree, at least not with the accuracy-time tradeoff I'm willing to consider. One surprise was how lightning quick xgboost was! It took less than a second to run, which was stunning. The book did mention that we needed to alter xgboosts input to get lightning fast outputs and we did so and got something really special.
