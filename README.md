@@ -26,3 +26,14 @@ Addtional group member work can be found below and in the similarity folder!
 [Clustering Notebook](https://github.com/Jackshouka/ML_Portfolio/blob/main/Similarity/Clustering.pdf)
 
 [Dimensionality Reduction Notebook](https://github.com/Jackshouka/ML_Portfolio/blob/main/Similarity/Dimensionality_Reduction.pdf)
+
+## Kernel and Ensemble Methods
+This partner project had us implementing svm for regression and classification, additionally, we performed classification on the same dataset using decsion trees, random forest, adaboost and xgboost. The folder can be found here.
+
+[Folder](https://github.com/Jackshouka/ML_Portfolio/tree/main/Kernel_and_Ensemble)
+
+[SVM Regression](https://github.com/Jackshouka/ML_Portfolio/blob/main/Kernel_and_Ensemble/RegressionKernel.pdf)
+
+[SVM Classification](https://github.com/Jackshouka/ML_Portfolio/blob/main/Kernel_and_Ensemble/kernelClassification.pdf)
+
+[Ensemble Methods Classification](https://github.com/Jackshouka/ML_Portfolio/blob/main/Kernel_and_Ensemble/Ensemble%20Techniques%20Rice%20Classification%20-%2010_23.pdf)
