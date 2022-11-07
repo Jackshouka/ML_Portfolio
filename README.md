@@ -37,3 +37,10 @@ This partner project had us implementing svm for regression and classification, 
 [SVM Classification](https://github.com/Jackshouka/ML_Portfolio/blob/main/Kernel_and_Ensemble/kernelClassification.pdf)
 
 [Ensemble Methods Classification](https://github.com/Jackshouka/ML_Portfolio/blob/main/Kernel_and_Ensemble/Ensemble%20Techniques%20Rice%20Classification%20-%2010_23.pdf)
+
+## ML with sklearn
+This project was my first experiment with machine learning in python. We take an automobile dataset and perform classification techniques with logistic regression, decision trees and neural networks. The folder can be found here.
+
+[Folder](https://github.com/Jackshouka/ML_Portfolio/tree/main/ML_With_sklearn)
+
+[PDF Export](https://github.com/Jackshouka/ML_Portfolio/blob/main/ML_With_sklearn/ml_with_sklearn.pdf)
