@@ -44,3 +44,8 @@ This project was my first experiment with machine learning in python. We take an
 [Folder](https://github.com/Jackshouka/ML_Portfolio/tree/main/ML_With_sklearn)
 
 [PDF Export](https://github.com/Jackshouka/ML_Portfolio/blob/main/ML_With_sklearn/ml_with_sklearn.pdf)
+
+## Image Classification
+This final project was our first foray into deep and transfer learning with an image classification dataset. It can be found here.
+
+[Folder](https://github.com/Jackshouka/ML_Portfolio/blob/main/ImageClassification)
